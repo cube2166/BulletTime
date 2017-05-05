@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/GameState.spritefont</SourceFile>
+  <SourceFile>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/GameState.spritefont</SourceFile>
   <SourceTime>2017-05-05T19:42:19.8017253+08:00</SourceTime>
-  <DestFile>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/bin/Windows/GameState.xnb</DestFile>
-  <DestTime>2017-05-05T21:53:58.102486+08:00</DestTime>
+  <DestFile>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/bin/Windows/GameState.xnb</DestFile>
+  <DestTime>2017-05-05T23:18:56.7882886+08:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2017-03-01T23:05:36+08:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/blank.png</SourceFile>
+  <SourceFile>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/blank.png</SourceFile>
   <SourceTime>2017-05-03T12:08:08.1333382+08:00</SourceTime>
-  <DestFile>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/bin/Windows/blank.xnb</DestFile>
-  <DestTime>2017-05-05T21:53:57.902955+08:00</DestTime>
+  <DestFile>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/bin/Windows/blank.xnb</DestFile>
+  <DestTime>2017-05-05T23:18:56.5887595+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T23:05:36+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

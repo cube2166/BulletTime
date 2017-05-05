@@ -152,7 +152,7 @@ namespace BulletTime
             Width = size;
             Height = size;
             _speed = _speedMax;
-            thisClolor = Color.White;
+            thisClolor = new Color(rand.Next(50, 255), rand.Next(50, 255), rand.Next(50, 255));
             _action = act;
 
 //            _shootSpeed = Math.Pow(rand.Next(2, 5) * 4,2);
@@ -222,7 +222,7 @@ namespace BulletTime
             {
                 canMove = false;
                 Degree = _distDegree;
-                _distDegree = _splitDegree * rand.Next(1, _splitNumber);// * (rand.Next()%2==0?-1:1);
+                _distDegree = _splitDegree * rand.Next(1, _splitNumber);
                 canShoot = true;
             }
 
@@ -257,12 +257,14 @@ namespace BulletTime
         {
 
             double tempDeg = CalDeg(Degree - 180);
-            int dir = 0;
-            if (_shootCount % 2 == 0) dir = 1;
-            else dir = -1;
+            BulletStyle style;
+            if (_shootCount % 3 == 0) style = BulletStyle.LeftRotate;
+            else if (_shootCount % 3 == 1) style = BulletStyle.RightRotate;
+            else style = BulletStyle.Line;
             for (int jj = 0; jj < _vector; jj++)
             {
-                Bullet temp = new Bullet(Texture, X + Width / 2, Y + Height / 2, Width / 2, (tempDeg + (jj - 1) * (_shootDeg / _vector - 1)), _shootSpeed, dir);
+                Bullet temp = new Bullet(Texture, X + Width / 2, Y + Height / 2, Width / 2,
+                    (tempDeg + (jj - 1) * (_shootDeg / _vector - 1)), _shootSpeed, style, thisClolor);
                 temp.showHandler += _action;
                 OnShoot(temp);
             }
@@ -282,6 +284,13 @@ namespace BulletTime
         #endregion
     }
 
+    public enum BulletStyle
+    {
+        Line = 0,
+        LeftRotate,
+        RightRotate
+    }
+
     public class Bullet : MyObject
     {
         #region Private
@@ -291,7 +300,7 @@ namespace BulletTime
         private double _degree;
         private double _speed;
         private double _radius;
-        private int _direct;
+        private BulletStyle style;
         #endregion
 
         #region Property
@@ -329,17 +338,17 @@ namespace BulletTime
 
 
         #region Create
-        public Bullet(object tt, float x, float y, int size, double deg, double sp, int dir) : base(tt)
+        public Bullet(object tt, float x, float y, int size, double deg, double sp, BulletStyle bs, Color cc) : base(tt)
         {
             Width = size;
             Height = size;
             X = x - size / 2;
             Y = y - size / 2;
-            thisClolor = Color.Green;
+            thisClolor = cc;
             Degree = deg;
             Speed = sp;
 
-            _direct = dir;
+            style = bs;
 
             canCheck = false;
             canBreak = true;
@@ -351,10 +360,28 @@ namespace BulletTime
         #region Method
         public override void Update(float elapsedTime)
         {
-            Degree += 20 * elapsedTime * _direct;
-            _radius += 1 * elapsedTime;
-            X += (float)((vx * elapsedTime)* _radius);
-            Y += (float)((vy * elapsedTime)* _radius);
+            switch (style)
+            {
+                case BulletStyle.Line:
+                    X += (float)((vx * elapsedTime) * _speed / 2);
+                    Y += (float)((vy * elapsedTime) * _speed / 2);
+                    break;
+                case BulletStyle.LeftRotate:
+                    Degree += 20 * elapsedTime * -1;
+                    _radius += 1 * elapsedTime;
+                    X += (float)((vx * elapsedTime) * _radius);
+                    Y += (float)((vy * elapsedTime) * _radius);
+                    break;
+                case BulletStyle.RightRotate:
+                    Degree += 20 * elapsedTime * 1;
+                    _radius += 1 * elapsedTime;
+                    X += (float)((vx * elapsedTime) * _radius);
+                    Y += (float)((vy * elapsedTime) * _radius);
+                    break;
+                default:
+                    break;
+            }
+
             if (X + Width < 0 || X>Game1.window_width ||
                 Y + Height <0 || Y>Game1.window_height)
             {
@@ -367,83 +394,6 @@ namespace BulletTime
             return deg * (Math.PI / 180);
         }
         #endregion
-    }
-
-    public class MyBall : MyObject
-    {
-        private float _speed;
-        public float Speed
-        {
-            get { return _speed; }
-            set
-            {
-                if (_speed != value)
-                {
-                    _speed = value;
-                    vx = Speed * Math.Cos(radians(_degree));
-                    vy = Speed * Math.Sin(radians(_degree));
-                }
-            }
-        }
-        private double _degree;
-        public double Degree
-        {
-            get { return _degree; }
-            set
-            {
-                if (_degree != value)
-                {
-                    _degree = value;
-                    vx = Speed * Math.Cos(radians(_degree));
-                    vy = Speed * Math.Sin(radians(_degree));
-                }
-            }
-        }
-
-        private double radians(double deg)
-        {
-            return deg * (Math.PI / 180);
-        }
-
-        private double vx;
-        private double vy;
-        public MyBall(int x, int y, int size, float sp, Color c, object tt) : base(tt)
-        {
-            X = x;
-            Y = y;
-            Width = size;
-            Height = size;
-            thisClolor = c;
-            Speed = sp;
-
-            Degree = 45;
-
-            canCheck = true;
-            canBreak = false;
-            canAttack = false;
-        }
-
-        public void Attack(int val)
-        {
-            switch (val)
-            {
-                case 1:
-                    Degree = -Degree;
-                    break;
-                case 2:
-                    Degree = 180 - Degree;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public void Update(float elapsedTime)
-        {
-            X += (float)(vx * elapsedTime);
-            Y += (float)(vy * elapsedTime);
-            OnCheck();
-        }
     }
 
     public class Player : MyObject
@@ -476,82 +426,24 @@ namespace BulletTime
         {
             this.X -= (int)this.Speed;
             if (X < BoundL) X = BoundL;
- //           OnCheck();
         }
 
         public void MoveRight()
         {
             this.X += (int)this.Speed;
             if ((X + Width) > BoundR) X = BoundR - Width;
-//            OnCheck();
         }
 
         public void MoveUP()
         {
             this.Y -= (int)this.Speed;
             if (Y < BoundU) Y = BoundU;
-//            OnCheck();
         }
 
         public void MoveDown()
         {
             this.Y += (int)this.Speed;
             if ((Y + Height) > BoundD) Y = BoundD - Height;
-//            OnCheck();
-        }
-    }
-
-    public class MyWall : MyObject
-    {
-        public MyWall(int x, int y, int w, int h, Color c, object tt) : base(tt)
-        {
-            this.X = x;
-            Y = y;
-            Width = w;
-            Height = h;
-            thisClolor = c;
-
-            canCheck = false;
-            canBreak = false;
-            canAttack = true;
-        }
-    }
-
-    public class MyFont : MyObject
-    {
-        public String ss { get; set; }
-        public readonly int sX;
-        public readonly int sY;
-        public readonly Color sC;
-        public MyFont(int x, int y, string s, Color c, int offset, object tt) : base(tt)
-        {
-            X = x;
-            sX = x + offset;
-            Y = y;
-            sY = y + offset;
-            thisClolor = c;
-            sC = new Color((byte)(thisClolor.R * 0.5), (byte)(thisClolor.G * 0.5), (byte)(thisClolor.B * 0.5), (byte)(thisClolor.A * 0.5));
-            ss = s;
-
-            canCheck = false;
-            canBreak = false;
-            canAttack = false;
-        }
-    }
-
-    public class MyBrick : MyObject
-    {
-        public MyBrick(int x, int y, int w, int h, Color c, object tt) : base(tt)
-        {
-            this.X = x;
-            Y = y;
-            Width = w;
-            Height = h;
-            thisClolor = c;
-
-            canCheck = false;
-            canBreak = true;
-            canAttack = true;
         }
     }
 
@@ -636,6 +528,7 @@ namespace BulletTime
 
             return !((p1_2.X < p2_1.X) || (p1_1.X > p2_2.X) ||
                 (p1_2.Y < p2_1.Y) || (p1_1.Y > p2_2.Y));
+
 
             //if ((pointL.X > trig.X) && (pointL.X <= trig.X + trig.Width) &&
             //    (pointL.Y > trig.Y) && (pointL.Y <= trig.Y + trig.Height))

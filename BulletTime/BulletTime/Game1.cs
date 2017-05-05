@@ -25,6 +25,10 @@ namespace BulletTime
         Player player;
         bool gameOver;
         SpriteFont stateFont;
+        Random rand;
+        double totalTime;
+        int totalLaunchpad;
+        double aliveTime;
 
         public Game1()
         {
@@ -46,6 +50,7 @@ namespace BulletTime
 
             circle_center = new Vector2(window_width / 2 - 1, window_height / 2 - 1);
             circle_radius = window_height / 2 - 50;
+            rand = new Random(DateTime.Now.Second);
 
             base.Initialize();
         }
@@ -68,12 +73,11 @@ namespace BulletTime
             player.showHandler += prepareShow;
             ObjectCollect.Add(player);
 
-            for (int ii = 0; ii < 10; ii++)
-            {
-                Launchpad temp = new Launchpad(texture_blank, circle_center, circle_radius, 10, prepareShow, ii);
-                temp.showHandler += prepareShow;
-                ObjectCollect.Add(temp);
-            }
+
+            Launchpad temp = new Launchpad(texture_blank, circle_center, circle_radius, 10, prepareShow, rand.Next());
+            temp.showHandler += prepareShow;
+            ObjectCollect.Add(temp);
+            totalLaunchpad++;
             // TODO: use this.Content to load your game content here
         }
 
@@ -106,6 +110,15 @@ namespace BulletTime
 
             if (gameOver == false)
             {
+                totalTime += elapsedTime;
+                aliveTime += elapsedTime;
+                if (totalTime> totalLaunchpad * 5)
+                {
+                    Launchpad temp = new Launchpad(texture_blank, circle_center, circle_radius, 10, prepareShow, rand.Next());
+                    temp.showHandler += prepareShow;
+                    ObjectCollect.Add(temp);
+                    totalLaunchpad++;
+                }
                 for (int ii = 0; ii < ObjectCollect.Count; ii++)
                 {
                     ObjectCollect[ii].Update(elapsedTime);
@@ -115,18 +128,6 @@ namespace BulletTime
                     gameOver = true;
                 }
             }
-
-            //float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-
-            //for (int ii = 0; ii < ObjectCollect.Count; ii++)
-            //{
-            //    ObjectCollect[ii].Update(elapsedTime);
-            //}
-            //if(player.OnCheck() == true)
-            //{
-            //    gameOver = true;
-            //}
 
             KeyboardState keyboard = Keyboard.GetState();
             if (keyboard.IsKeyDown(Keys.A) || keyboard.IsKeyDown(Keys.Left))
@@ -179,6 +180,24 @@ namespace BulletTime
                 if (clear == true)
                     break;
             }
+            count = ObjectCollect.Count;
+            for (int ii = 0; ii < count; ii++)
+            {
+                foreach (var item in ObjectCollect)
+                {
+                    Launchpad temp = item as Launchpad;
+                    if (temp != null)
+                    {
+                        ObjectCollect.Remove(item);
+                        totalLaunchpad--;
+                        break;
+                    }
+                }
+                if (totalLaunchpad == 1)
+                    break;
+            }
+            totalTime = 0;
+            aliveTime = 0;
         }
 
 
@@ -203,6 +222,11 @@ namespace BulletTime
                 String press = "Press";
                 String RR = " R";
                 String to_ReStart = " to ReStart";
+                string scoteStr;
+
+                int min = (int)aliveTime / 60;
+                int sec = (int)aliveTime % 60;
+                scoteStr = string.Format("Alive: {0}Min {1}Sec", min, sec);
 
                 // Measure the size of text in the given font
                 Vector2 titleSize = stateFont.MeasureString(title);
@@ -210,6 +234,7 @@ namespace BulletTime
                 Vector2 pressSize = stateFont.MeasureString(press);
                 Vector2 RRSize = stateFont.MeasureString(RR);
                 Vector2 to_ReStartSize = stateFont.MeasureString(to_ReStart);
+                Vector2 scoteStrSize = stateFont.MeasureString(scoteStr);
 
                 // Draw the text horizontally centered
                 spriteBatch.DrawString(stateFont, title,
@@ -227,6 +252,10 @@ namespace BulletTime
                 spriteBatch.DrawString(stateFont, to_ReStart,
                 new Vector2(window_width / 2 - pressSpaceSize.X / 2 + pressSize.X + RRSize.X,
                 window_height / 2), Color.White);
+
+                spriteBatch.DrawString(stateFont, scoteStr,
+                new Vector2(window_width / 2 - scoteStrSize.X / 2,
+                window_height / 2+100), Color.Yellow);
 
 
             }

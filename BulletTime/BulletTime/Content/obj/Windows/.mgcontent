@@ -4,7 +4,7 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/blank.png</File>
-    <File>C:/Users/cube2166/documents/visual studio 2015/Projects/BulletTime/BulletTime/Content/GameState.spritefont</File>
+    <File>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/blank.png</File>
+    <File>C:/Users/cube2166/Documents/Visual Studio 2015/Projects/project/trunk/BulletTime/BulletTime/Content/GameState.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>
